@@ -1,7 +1,7 @@
 {
-  "name": "dazn-iphone-recreate",
+  "name": "zillow-iphone-recreate",
   "private": true,
-  "version": "2.45.88",
+  "version": "2026.77.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
