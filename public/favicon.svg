@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#08090C"/>
+  <path fill="none" stroke="#E8E8E8" stroke-width="3.2" d="M16 12h32a4 4 0 0 1 4 4v8.5c-4.2 1.4-4.2 7.6 0 9V48a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4v-14.5c4.2-1.4 4.2-7.6 0-9V16a4 4 0 0 1 4-4z"/>
+  <text x="32" y="29" text-anchor="middle" fill="#E8E8E8" font-family="Arial Black, Helvetica, sans-serif" font-size="11" font-weight="800" letter-spacing="1">DA</text>
+  <text x="32" y="44" text-anchor="middle" fill="#E8E8E8" font-family="Arial Black, Helvetica, sans-serif" font-size="11" font-weight="800" letter-spacing="1">ZN</text>
+</svg>
