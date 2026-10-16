@@ -1,7 +1,7 @@
 {
-  "name": "zillow-iphone-recreate",
+  "name": "doordash-iphone-recreate",
   "private": true,
-  "version": "2026.77.0",
+  "version": "8.40.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

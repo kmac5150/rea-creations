@@ -1,308 +1,610 @@
-export type ListingStatus = "For sale" | "For rent" | "Sold";
+export type Vertical = "restaurant" | "grocery" | "retail";
 
-export type PriceEvent = { date: string; event: string; price: number };
-
-export type Agent = {
-  name: string;
-  brokerage: string;
-  phone: string;
-  rating: number;
-  sales: number;
-  tint: string;
-};
-
-export type Listing = {
+export type OptionGroup = {
   id: string;
-  price: number;
-  beds: number;
-  baths: number;
-  sqft: number;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  neighborhood: string;
-  homeType: "House" | "Condo" | "Townhouse" | "Multi-family" | "Apartment";
-  status: ListingStatus;
-  badge?: string;
-  photos: string[];
-  daysOnZillow: number;
-  views: number;
-  saves: number;
-  zestimate: number;
-  rentZestimate: number;
-  yearBuilt: number;
-  lotAcres: number;
-  hoa: number;
-  parking: string;
-  heating: string;
-  cooling: string;
-  agent: Agent;
-  description: string;
-  specials: string[];
-  priceHistory: PriceEvent[];
-  tourAvailable: string;
-  has3D: boolean;
-  /** Pin position on the stylised map, in percent of the map canvas. */
-  x: number;
-  y: number;
-};
-
-const EXTERIOR = Array.from({ length: 15 }, (_, i) => `/photos/p${i + 1}.jpg`).concat("/photos/p17.jpg");
-const INTERIOR = [16, 18, 19, 20, 21, 22, 23, 24].map((n) => `/photos/p${n}.jpg`);
-
-export const AGENTS: Agent[] = [
-  { name: "Marisol Grant", brokerage: "Harpeth Ridge Realty", phone: "(615) 555-0142", rating: 4.9, sales: 128, tint: "#2b6f4e" },
-  { name: "Dev Okafor", brokerage: "Cumberland & Co. Real Estate", phone: "(615) 555-0177", rating: 5.0, sales: 86, tint: "#7b3fa0" },
-  { name: "Hannah Whitlock", brokerage: "Music Row Properties", phone: "(615) 555-0119", rating: 4.8, sales: 213, tint: "#b5482a" },
-  { name: "Tomás Reyes", brokerage: "Belle Meade Partners", phone: "(615) 555-0163", rating: 4.9, sales: 64, tint: "#1d5bbf" },
-  { name: "Priya Natarajan", brokerage: "Greenway Home Group", phone: "(615) 555-0188", rating: 5.0, sales: 152, tint: "#a0306a" },
-];
-
-type Seed = Pick<
-  Listing,
-  "price" | "beds" | "baths" | "sqft" | "street" | "zip" | "neighborhood" | "homeType" | "status" | "x" | "y"
-> & { badge?: string; days: number; year: number };
-
-const SEEDS: Seed[] = [
-  { price: 414000, beds: 3, baths: 2, sqft: 1374, street: "2218 Larkspur Ct", zip: "37214", neighborhood: "Maple Hollow", homeType: "House", status: "For sale", badge: "Showcase", days: 2, year: 1958, x: 63, y: 38 },
-  { price: 1299000, beds: 5, baths: 4, sqft: 3890, street: "1406 Vinewood Pl", zip: "37215", neighborhood: "Green Hills", homeType: "House", status: "For sale", badge: "Showcase", days: 5, year: 2019, x: 41, y: 66 },
-  { price: 589900, beds: 4, baths: 3, sqft: 2410, street: "731 Pinecrest Ln", zip: "37221", neighborhood: "Bellevue", homeType: "House", status: "For sale", badge: "Open: Sat 11am-1pm", days: 1, year: 2004, x: 18, y: 58 },
-  { price: 349000, beds: 2, baths: 2, sqft: 1102, street: "88 Rutledge Way #412", zip: "37203", neighborhood: "The Gulch", homeType: "Condo", status: "For sale", badge: "New 3 hrs ago", days: 0, year: 2016, x: 48, y: 44 },
-  { price: 725000, beds: 4, baths: 3.5, sqft: 2960, street: "5120 Oak Barrel Dr", zip: "37211", neighborhood: "Crieve Hall", homeType: "House", status: "For sale", badge: "Price cut: $15K (10/12)", days: 18, year: 1997, x: 52, y: 78 },
-  { price: 469500, beds: 3, baths: 2.5, sqft: 1785, street: "302 Delmont Ave", zip: "37207", neighborhood: "Inglewood", homeType: "Townhouse", status: "For sale", badge: "3D Tour", days: 7, year: 2021, x: 60, y: 22 },
-  { price: 2150000, beds: 5, baths: 5.5, sqft: 5210, street: "17 Belle Forest Cir", zip: "37205", neighborhood: "Belle Meade", homeType: "House", status: "For sale", badge: "Showcase", days: 11, year: 2022, x: 28, y: 52 },
-  { price: 539000, beds: 3, baths: 3, sqft: 1920, street: "1611 Fatherland St", zip: "37206", neighborhood: "East Nashville", homeType: "House", status: "For sale", badge: "Coming soon", days: 3, year: 1925, x: 58, y: 34 },
-  { price: 815000, beds: 4, baths: 3, sqft: 3125, street: "940 Harpeth Bend Dr", zip: "37221", neighborhood: "Bellevue", homeType: "House", status: "For sale", days: 26, year: 2008, x: 12, y: 70 },
-  { price: 299900, beds: 2, baths: 1, sqft: 940, street: "4412 Clarksville Pike", zip: "37218", neighborhood: "Bordeaux", homeType: "House", status: "For sale", badge: "Price cut: $5K (10/9)", days: 34, year: 1962, x: 36, y: 20 },
-  { price: 675000, beds: 3, baths: 2.5, sqft: 2240, street: "2309 Elliston Pl #3", zip: "37203", neighborhood: "Midtown", homeType: "Townhouse", status: "For sale", badge: "Open: Sun 1-3pm", days: 4, year: 2020, x: 44, y: 50 },
-  { price: 999000, beds: 4, baths: 4, sqft: 3480, street: "3810 Woodmont Blvd", zip: "37215", neighborhood: "Green Hills", homeType: "House", status: "For sale", days: 9, year: 2015, x: 36, y: 72 },
-  { price: 2450, beds: 2, baths: 2, sqft: 1150, street: "500 Church St #1806", zip: "37219", neighborhood: "Downtown", homeType: "Apartment", status: "For rent", badge: "Special offer", days: 2, year: 2018, x: 50, y: 40 },
-  { price: 3195, beds: 3, baths: 2.5, sqft: 1690, street: "1214 Gartland Ave", zip: "37206", neighborhood: "Lockeland Springs", homeType: "Townhouse", status: "For rent", days: 6, year: 2017, x: 66, y: 30 },
-  { price: 1875, beds: 1, baths: 1, sqft: 780, street: "2004 Charlotte Ave #210", zip: "37203", neighborhood: "Midtown", homeType: "Apartment", status: "For rent", badge: "3D Tour", days: 1, year: 2019, x: 40, y: 46 },
-  { price: 4200, beds: 4, baths: 3, sqft: 2600, street: "811 Calvin Ave", zip: "37204", neighborhood: "12 South", homeType: "House", status: "For rent", days: 12, year: 2012, x: 47, y: 58 },
-  { price: 612000, beds: 3, baths: 2, sqft: 1840, street: "1508 Ashwood Ave", zip: "37212", neighborhood: "Belmont-Hillsboro", homeType: "House", status: "Sold", days: 21, year: 1939, x: 45, y: 55 },
-  { price: 458000, beds: 3, baths: 2, sqft: 1510, street: "3105 Belwood St", zip: "37203", neighborhood: "Wedgewood-Houston", homeType: "House", status: "Sold", days: 30, year: 2014, x: 53, y: 52 },
-];
-
-const SPECIALS = [
-  ["Fenced backyard", "Updated kitchen", "Covered porch", "Walk to coffee"],
-  ["Chef's kitchen", "Primary on main", "Heated pool", "Smart home"],
-  ["Cul-de-sac lot", "Bonus room", "New roof 2024", "Two-car garage"],
-  ["City views", "Rooftop pool", "Concierge", "Walk Score 96"],
-  ["Finished basement", "Screened porch", "Mature trees", "Quartz counters"],
-];
-
-const DESCRIPTIONS = [
-  "Light-filled and thoughtfully refreshed, this home pairs original character with modern updates throughout. The open kitchen flows to a sunny living area and out to a private, fully fenced backyard made for summer evenings.",
-  "Designed for both everyday living and entertaining, with soaring ceilings, wide-plank oak floors and a kitchen anchored by a 10-foot island. The primary suite is a true retreat with a spa bath and custom closet.",
-  "Tucked on a quiet street minutes from shops and greenways, this move-in ready home offers flexible living spaces, a bonus room ideal for an office or playroom, and a two-car garage with extra storage.",
-];
-
-function money(n: number) {
-  return Math.round(n / 1000) * 1000;
-}
-
-export const LISTINGS: Listing[] = SEEDS.map((s, i) => {
-  const isRent = s.status === "For rent";
-  const cover = EXTERIOR[i % EXTERIOR.length];
-  const interiors = [0, 1, 2, 3, 4].map((k) => INTERIOR[(i + k) % INTERIOR.length]);
-  const agent = AGENTS[i % AGENTS.length];
-  const zestimate = isRent ? money(s.price * 190) : money(s.price * (0.97 + ((i * 7) % 9) / 100));
-  const listPrice = isRent ? s.price : money(s.price * 1.04);
-  return {
-    id: `z${41106842 + i * 1373}`,
-    price: s.price,
-    beds: s.beds,
-    baths: s.baths,
-    sqft: s.sqft,
-    street: s.street,
-    city: "Nashville",
-    state: "TN",
-    zip: s.zip,
-    neighborhood: s.neighborhood,
-    homeType: s.homeType,
-    status: s.status,
-    badge: s.badge,
-    photos: [cover, ...interiors, EXTERIOR[(i + 5) % EXTERIOR.length]],
-    daysOnZillow: s.days,
-    views: 180 + ((i * 97) % 1900),
-    saves: 6 + ((i * 13) % 140),
-    zestimate,
-    rentZestimate: isRent ? s.price : money(s.price * 0.0058) || 1800,
-    yearBuilt: s.year,
-    lotAcres: s.homeType === "Condo" || s.homeType === "Apartment" ? 0 : 0.18 + ((i * 3) % 7) / 10,
-    hoa: s.homeType === "Condo" || s.homeType === "Townhouse" || s.homeType === "Apartment" ? 185 + i * 15 : 0,
-    parking: s.homeType === "Condo" || s.homeType === "Apartment" ? "Garage, 1 space" : "Attached garage, 2 spaces",
-    heating: "Central, Natural gas",
-    cooling: "Central air",
-    agent,
-    description: DESCRIPTIONS[i % DESCRIPTIONS.length],
-    specials: SPECIALS[i % SPECIALS.length],
-    priceHistory: isRent
-      ? [{ date: "10/1/2026", event: "Listed for rent", price: s.price }]
-      : s.status === "Sold"
-        ? [
-            { date: "9/24/2026", event: "Sold", price: s.price },
-            { date: "8/30/2026", event: "Pending sale", price: listPrice },
-            { date: "8/12/2026", event: "Listed for sale", price: listPrice },
-            { date: "5/3/2019", event: "Sold", price: money(s.price * 0.68) },
-          ]
-        : [
-            ...(s.badge?.startsWith("Price cut") ? [{ date: "10/12/2026", event: "Price change", price: s.price }] : []),
-            { date: "9/29/2026", event: "Listed for sale", price: s.badge?.startsWith("Price cut") ? listPrice : s.price },
-            { date: "6/14/2021", event: "Sold", price: money(s.price * 0.74) },
-          ],
-    tourAvailable: i % 3 === 0 ? "tomorrow at 11:00 am" : i % 3 === 1 ? "today at 4:30 pm" : "Sat at 10:00 am",
-    has3D: i % 2 === 0 || s.badge === "3D Tour",
-    x: s.x,
-    y: s.y,
-  };
-});
-
-export type Conversation = {
-  id: string;
-  agent: Agent;
-  listingId: string;
-  preview: string;
-  time: string;
-  unread: boolean;
-  messages: { from: "me" | "them"; text: string; time: string }[];
-};
-
-export const CONVERSATIONS: Conversation[] = [
-  {
-    id: "c1",
-    agent: AGENTS[0],
-    listingId: LISTINGS[0].id,
-    preview: "Great news — the seller confirmed Saturday at 11. See you there!",
-    time: "9:12 PM",
-    unread: true,
-    messages: [
-      { from: "me", text: "Hi Marisol, is 2218 Larkspur Ct still available to tour this weekend?", time: "4:02 PM" },
-      { from: "them", text: "Hi! Yes it is. I can do Saturday at 11:00 am or Sunday at 2:00 pm. Which works better?", time: "4:20 PM" },
-      { from: "me", text: "Saturday at 11 would be perfect.", time: "6:45 PM" },
-      { from: "them", text: "Great news — the seller confirmed Saturday at 11. See you there!", time: "9:12 PM" },
-    ],
-  },
-  {
-    id: "c2",
-    agent: AGENTS[3],
-    listingId: LISTINGS[2].id,
-    preview: "I pulled comps for Bellevue. Sending over a quick summary tomorrow.",
-    time: "Yesterday",
-    unread: false,
-    messages: [
-      { from: "me", text: "What do you think a fair offer on 731 Pinecrest would be?", time: "Yesterday" },
-      { from: "them", text: "I pulled comps for Bellevue. Sending over a quick summary tomorrow.", time: "Yesterday" },
-    ],
-  },
-  {
-    id: "c3",
-    agent: AGENTS[4],
-    listingId: LISTINGS[12].id,
-    preview: "The building offers 6 weeks free on a 13-month lease right now.",
-    time: "Mon",
-    unread: false,
-    messages: [
-      { from: "me", text: "Are pets allowed in unit 1806?", time: "Mon" },
-      { from: "them", text: "Yes — up to two pets. Also, the building offers 6 weeks free on a 13-month lease right now.", time: "Mon" },
-    ],
-  },
-];
-
-export type Notice = {
-  id: string;
-  kind: "new" | "price" | "tour" | "open" | "rec" | "sold";
   title: string;
-  body: string;
-  time: string;
-  listingId: string;
-  unread: boolean;
+  required: boolean;
+  max: number;
+  choices: { id: string; label: string; price: number }[];
 };
 
-export const NOTIFICATIONS: Notice[] = [
-  { id: "n1", kind: "new", title: "🏠 New home for sale", body: "$349K · 2 bd · 2 ba · 1,102 sqft — 88 Rutledge Way #412", time: "now", listingId: LISTINGS[3].id, unread: true },
-  { id: "n2", kind: "rec", title: "✨ Recommended for you ✨", body: "$589.9K · 4 bd · 3 ba · 2,410 sqft — 731 Pinecrest Ln", time: "1h", listingId: LISTINGS[2].id, unread: true },
-  { id: "n3", kind: "price", title: "Price cut on a home you saved", body: "5120 Oak Barrel Dr dropped $15,000 to $725K", time: "3h", listingId: LISTINGS[4].id, unread: true },
-  { id: "n4", kind: "tour", title: "Tour confirmed", body: "Sat, Oct 17 at 11:00 AM · 2218 Larkspur Ct with Marisol", time: "5h", listingId: LISTINGS[0].id, unread: false },
-  { id: "n5", kind: "open", title: "Open house this weekend", body: "2309 Elliston Pl #3 · Sun 1–3pm", time: "Yesterday", listingId: LISTINGS[10].id, unread: false },
-  { id: "n6", kind: "sold", title: "A home you viewed sold", body: "1508 Ashwood Ave sold for $612,000", time: "Tue", listingId: LISTINGS[16].id, unread: false },
+export type MenuItem = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  /** Photo path for restaurant items; emoji glyph for packaged goods. */
+  image: string;
+  emoji?: string;
+  category: string;
+  badge?: string;
+  likes?: number;
+  options?: OptionGroup[];
+};
+
+export type Store = {
+  id: string;
+  name: string;
+  vertical: Vertical;
+  cuisine: string[];
+  priceLevel: "$" | "$$" | "$$$";
+  rating: number;
+  reviews: string;
+  distance: number;
+  eta: number;
+  fee: string;
+  dashpass: boolean;
+  promo?: string;
+  hero: string;
+  logoText: string;
+  logoBg: string;
+  logoFg: string;
+  description: string;
+  categories: string[];
+  items: MenuItem[];
+};
+
+export type PastOrder = {
+  id: string;
+  storeId: string;
+  date: string;
+  items: number;
+  total: number;
+  status: "Completed" | "Cancelled";
+  rated?: number;
+};
+
+export const ADDRESSES = [
+  { id: "a1", label: "283 Hayes St", detail: "San Francisco, CA 94102", note: "Apt 4B · Leave at door" },
+  { id: "a2", label: "Work", detail: "1 Market St, San Francisco, CA 94105", note: "Lobby desk" },
+  { id: "a3", label: "1450 Valencia St", detail: "San Francisco, CA 94110", note: "" },
 ];
 
-export type SavedSearch = { id: string; name: string; criteria: string; newCount: number; frequency: string };
-
-export const SAVED_SEARCHES: SavedSearch[] = [
-  { id: "s1", name: "Nashville, TN", criteria: "For sale · $300K–$600K · 3+ bd · House", newCount: 12, frequency: "Instant" },
-  { id: "s2", name: "East Nashville", criteria: "For sale · Any price · 2+ bd · House, Townhouse", newCount: 4, frequency: "Daily" },
-  { id: "s3", name: "Midtown rentals", criteria: "For rent · Up to $2,500 · 1+ bd · Pets allowed", newCount: 0, frequency: "Daily" },
+export const CATEGORIES = [
+  { id: "pizza", label: "Pizza", emoji: "🍕" },
+  { id: "burrito", label: "Burrito", emoji: "🌯" },
+  { id: "bowls", label: "Bowls", emoji: "🥗" },
+  { id: "bakery", label: "Bakery", emoji: "🥐" },
+  { id: "smoothie", label: "Smoothie", emoji: "🥤" },
+  { id: "chicken", label: "Chicken", emoji: "🍗" },
+  { id: "sushi", label: "Sushi", emoji: "🍣" },
+  { id: "burgers", label: "Burgers", emoji: "🍔" },
+  { id: "ramen", label: "Ramen", emoji: "🍜" },
+  { id: "dessert", label: "Dessert", emoji: "🍰" },
+  { id: "coffee", label: "Coffee", emoji: "☕" },
+  { id: "breakfast", label: "Breakfast", emoji: "🍳" },
 ];
 
-export const RECENT_SEARCHES = ["Nashville, TN", "East Nashville, Nashville, TN", "37215", "Franklin, TN"];
+const img = (n: number) => `/img/f${n}.jpg`;
 
-export const NL_SUGGESTIONS = [
-  ["Nashville homes with ", "a fenced yard"],
-  ["Nashville homes with ", "a fireplace"],
-  ["Nashville homes with ", "hardwood floors"],
-  ["Nashville homes ", "under $500K near downtown"],
-];
-
-export type PlanStep = { id: string; icon: "dollar" | "home" | "sign" | "pen"; tone: string; title: string; body: string };
-
-export const BUYING_STEPS: PlanStep[] = [
-  { id: "b0", icon: "dollar", tone: "#0d3b2e", title: "Set your starting budget", body: "Ground your home search in real numbers and today’s market." },
-  { id: "b1", icon: "home", tone: "#0b2a7a", title: "Find the home", body: "Search, compare, and get offer-ready." },
-  { id: "b2", icon: "sign", tone: "#0d3b2e", title: "Make an offer", body: "Plan your offer strategy and negotiate with confidence." },
-  { id: "b3", icon: "pen", tone: "#0b2a7a", title: "Close your purchase", body: "Finalize your financing and close on your new home." },
-];
-
-export const SELLING_STEPS: PlanStep[] = [
-  { id: "s0", icon: "dollar", tone: "#0d3b2e", title: "Understand your selling position", body: "Get clear on your home’s value, timing, and selling options." },
-  { id: "s1", icon: "home", tone: "#0b2a7a", title: "Prepare your home & list it", body: "Set your strategy and prepare your home to attract buyers." },
-  { id: "s2", icon: "sign", tone: "#0d3b2e", title: "Find a buyer", body: "Review your offers and choose what works best for you." },
-  { id: "s3", icon: "pen", tone: "#0b2a7a", title: "Close your sale", body: "Wrap up the final steps and complete your sale." },
-];
-
-export const SCHOOLS = [
-  { rating: 7, name: "Lakeview Elementary School", grades: "PK-4", distance: "0.6 mi" },
-  { rating: 5, name: "Two Rivers Middle School", grades: "5-8", distance: "1.4 mi" },
-  { rating: 6, name: "McGavock High School", grades: "9-12", distance: "2.1 mi" },
-];
-
-export function formatPrice(l: Pick<Listing, "price" | "status">) {
-  const p = `$${l.price.toLocaleString("en-US")}`;
-  return l.status === "For rent" ? `${p}/mo` : p;
-}
-
-export function shortPrice(n: number) {
-  if (n < 10000) return `$${(n / 1000).toFixed(1)}K`;
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 2).replace(/\.?0+$/, "")}M`;
-  return `$${Math.round(n / 1000)}K`;
-}
-
-export function typeLabel(l: Listing) {
-  switch (l.status) {
-    case "For sale":
-      return `${l.homeType} for sale`;
-    case "For rent":
-      return `${l.homeType} for rent`;
-    case "Sold":
-      return "Sold";
+function opts(kind: "size" | "protein" | "drink" | "spice" | "toppings"): OptionGroup {
+  switch (kind) {
+    case "size":
+      return {
+        id: "size",
+        title: "Choose a size",
+        required: true,
+        max: 1,
+        choices: [
+          { id: "s", label: "Small", price: 0 },
+          { id: "m", label: "Medium", price: 3 },
+          { id: "l", label: "Large", price: 6 },
+        ],
+      };
+    case "protein":
+      return {
+        id: "protein",
+        title: "Choose your protein",
+        required: true,
+        max: 1,
+        choices: [
+          { id: "chk", label: "Chicken", price: 0 },
+          { id: "tofu", label: "Crispy tofu", price: 0 },
+          { id: "steak", label: "Steak", price: 3.5 },
+          { id: "shrimp", label: "Shrimp", price: 4 },
+        ],
+      };
+    case "drink":
+      return {
+        id: "drink",
+        title: "Add a drink",
+        required: false,
+        max: 1,
+        choices: [
+          { id: "coke", label: "Coca-Cola", price: 2.5 },
+          { id: "lemonade", label: "Fresh lemonade", price: 3.75 },
+          { id: "water", label: "Sparkling water", price: 2.25 },
+        ],
+      };
+    case "spice":
+      return {
+        id: "spice",
+        title: "Spice level",
+        required: true,
+        max: 1,
+        choices: [
+          { id: "mild", label: "Mild", price: 0 },
+          { id: "med", label: "Medium", price: 0 },
+          { id: "hot", label: "Hot 🌶️", price: 0 },
+        ],
+      };
+    case "toppings":
+      return {
+        id: "toppings",
+        title: "Extra toppings",
+        required: false,
+        max: 3,
+        choices: [
+          { id: "cheese", label: "Extra cheese", price: 1.5 },
+          { id: "bacon", label: "Bacon", price: 2 },
+          { id: "avocado", label: "Avocado", price: 2.25 },
+          { id: "egg", label: "Fried egg", price: 1.75 },
+        ],
+      };
     default: {
-      const never: never = l.status;
+      const never: never = kind;
       return never;
     }
   }
 }
 
-export function monthlyPayment(price: number) {
-  const principal = price * 0.8;
-  const r = 0.0662 / 12;
-  const n = 360;
-  const pi = (principal * r) / (1 - Math.pow(1 + r, -n));
-  return Math.round(pi + (price * 0.0068) / 12 + 110);
+type ItemSeed = [name: string, description: string, price: number, image: number, category: string, extra?: Partial<MenuItem>];
+
+function menu(prefix: string, seeds: ItemSeed[]): MenuItem[] {
+  return seeds.map(([name, description, price, image, category, extra], i) => ({
+    id: `${prefix}-${i}`,
+    name,
+    description,
+    price,
+    image: img(image),
+    category,
+    ...extra,
+  }));
 }
 
-export function byId(id: string) {
-  return LISTINGS.find((l) => l.id === id) ?? LISTINGS[0];
+type GoodSeed = [name: string, size: string, price: number, emoji: string, category: string];
+
+function goods(prefix: string, seeds: GoodSeed[]): MenuItem[] {
+  return seeds.map(([name, size, price, emoji, category], i) => ({
+    id: `${prefix}-${i}`,
+    name,
+    description: size,
+    price,
+    image: "",
+    emoji,
+    category,
+  }));
+}
+
+export const STORES: Store[] = [
+  {
+    id: "golden-crust",
+    name: "Golden Crust Pizza Co.",
+    vertical: "restaurant",
+    cuisine: ["Pizza", "Italian"],
+    priceLevel: "$$",
+    rating: 4.8,
+    reviews: "12k+",
+    distance: 0.6,
+    eta: 22,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    promo: "$5 off $30+",
+    hero: img(12),
+    logoText: "GC",
+    logoBg: "#1d1d1d",
+    logoFg: "#f6c445",
+    description: "Wood-fired Neapolitan pies, garlic knots and house-made ranch since 2011.",
+    categories: ["Most Ordered", "Pizzas", "Sides", "Desserts", "Drinks"],
+    items: menu("gc", [
+      ["Margherita", "San Marzano tomato, fior di latte, basil, olive oil", 18.5, 1, "Pizzas", { badge: "#1 Most liked", likes: 96, options: [opts("size"), opts("toppings")] }],
+      ["Hot Honey Pepperoni", "Cup-and-char pepperoni, mozzarella, Calabrian hot honey", 21, 12, "Pizzas", { badge: "#2 Most liked", likes: 94, options: [opts("size"), opts("toppings")] }],
+      ["Meatball Sliders (3)", "Beef & pork meatballs, marinara, provolone, brioche", 13.75, 10, "Sides", { likes: 91 }],
+      ["Garlic Knots (6)", "Parmesan, parsley, roasted garlic butter, marinara", 8.5, 9, "Sides"],
+      ["Tiramisu", "Espresso-soaked ladyfingers, mascarpone cream, cocoa", 9, 7, "Desserts"],
+      ["San Pellegrino Limonata", "11.15 oz can", 3.5, 31, "Drinks"],
+    ]),
+  },
+  {
+    id: "smash-bros",
+    name: "Smash Bros Burgers",
+    vertical: "restaurant",
+    cuisine: ["Burgers", "American"],
+    priceLevel: "$",
+    rating: 4.7,
+    reviews: "20k+",
+    distance: 0.9,
+    eta: 19,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    promo: "$10 off $20+",
+    hero: img(13),
+    logoText: "SB",
+    logoBg: "#d62b1f",
+    logoFg: "#fff",
+    description: "Double-smashed patties, crinkle fries and thick shakes.",
+    categories: ["Most Ordered", "Burgers", "Fries & Sides", "Shakes"],
+    items: menu("sb", [
+      ["Double Smash", "Two smashed patties, American cheese, pickles, smash sauce", 12.95, 2, "Burgers", { badge: "#1 Most liked", likes: 97, options: [opts("toppings"), opts("drink")] }],
+      ["Bacon Jam Burger", "Single patty, bacon onion jam, cheddar, arugula", 13.5, 18, "Burgers", { likes: 93, options: [opts("toppings"), opts("drink")] }],
+      ["Sliders Duo", "Two sliders, caramelized onion, Swiss", 11.25, 17, "Burgers", { badge: "#3 Most liked", likes: 92 }],
+      ["Loaded Crinkle Fries", "Cheddar sauce, bacon, scallion, ranch", 7.5, 13, "Fries & Sides"],
+      ["Strawberry Shake", "Fresh strawberries, vanilla soft serve", 6.75, 23, "Shakes"],
+    ]),
+  },
+  {
+    id: "verde-bowl",
+    name: "Verde Bowl Kitchen",
+    vertical: "restaurant",
+    cuisine: ["Bowls", "Healthy"],
+    priceLevel: "$$",
+    rating: 4.9,
+    reviews: "4k+",
+    distance: 0.4,
+    eta: 16,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    hero: img(5),
+    logoText: "VB",
+    logoBg: "#2f7d4a",
+    logoFg: "#fff",
+    description: "Seasonal grain bowls and salads built to order.",
+    categories: ["Most Ordered", "Bowls", "Salads", "Drinks"],
+    items: menu("vb", [
+      ["Harvest Bowl", "Wild rice, roasted sweet potato, kale, goat cheese, balsamic", 15.25, 5, "Bowls", { badge: "#1 Most liked", likes: 98, options: [opts("protein")] }],
+      ["Spicy Salmon Poke", "Sushi rice, salmon, cucumber, avocado, spicy mayo", 17.5, 3, "Bowls", { likes: 95, options: [opts("spice")] }],
+      ["Green Goddess Salad", "Little gem, herbs, cucumber, pistachio, goddess dressing", 13.75, 6, "Salads", { options: [opts("protein")] }],
+      ["Fresh Squeezed OJ", "16 oz", 5.5, 31, "Drinks"],
+    ]),
+  },
+  {
+    id: "koi-rice",
+    name: "Koi & Rice Sushi",
+    vertical: "restaurant",
+    cuisine: ["Sushi", "Japanese"],
+    priceLevel: "$$$",
+    rating: 4.8,
+    reviews: "6k+",
+    distance: 1.3,
+    eta: 31,
+    fee: "$1.99 delivery fee",
+    dashpass: false,
+    promo: "20% off, up to $5",
+    hero: img(14),
+    logoText: "鯉",
+    logoBg: "#11264a",
+    logoFg: "#fff",
+    description: "Edomae-style nigiri, specialty rolls and omakase sets.",
+    categories: ["Most Ordered", "Specialty Rolls", "Nigiri", "Sides"],
+    items: menu("kr", [
+      ["Dragon Roll", "Shrimp tempura, eel, avocado, unagi sauce", 18, 14, "Specialty Rolls", { badge: "#1 Most liked", likes: 96 }],
+      ["Chef's Nigiri (8 pc)", "Daily selection of seasonal fish", 32, 19, "Nigiri", { likes: 97 }],
+      ["Spicy Tuna Roll", "Tuna, spicy mayo, cucumber, sesame", 11.5, 19, "Specialty Rolls", { options: [opts("spice")] }],
+      ["Miso Soup", "Tofu, wakame, scallion", 4, 15, "Sides"],
+    ]),
+  },
+  {
+    id: "noodle-lab",
+    name: "Noodle Lab Ramen",
+    vertical: "restaurant",
+    cuisine: ["Ramen", "Noodles"],
+    priceLevel: "$$",
+    rating: 4.6,
+    reviews: "9k+",
+    distance: 1.1,
+    eta: 27,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    hero: img(15),
+    logoText: "NL",
+    logoBg: "#f2d541",
+    logoFg: "#1d1d1d",
+    description: "18-hour tonkotsu, spicy miso and hand-pulled noodles.",
+    categories: ["Most Ordered", "Ramen", "Noodles", "Small Plates"],
+    items: menu("nl", [
+      ["Tonkotsu Ramen", "Pork bone broth, chashu, ajitama egg, nori", 17, 15, "Ramen", { badge: "#1 Most liked", likes: 95, options: [opts("spice")] }],
+      ["Garlic Shrimp Noodles", "Wok-tossed lo mein, shrimp, chili crisp", 16.5, 16, "Noodles", { likes: 92, options: [opts("spice")] }],
+      ["Thai Basil Plate", "Jasmine rice, holy basil, chili, crispy egg", 15, 4, "Small Plates", { options: [opts("protein"), opts("spice")] }],
+    ]),
+  },
+  {
+    id: "trattoria",
+    name: "Trattoria Nonna",
+    vertical: "restaurant",
+    cuisine: ["Italian", "Pasta"],
+    priceLevel: "$$",
+    rating: 4.7,
+    reviews: "3k+",
+    distance: 0.8,
+    eta: 24,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    promo: "Free garlic bread",
+    hero: img(9),
+    logoText: "TN",
+    logoBg: "#7a2c22",
+    logoFg: "#fff",
+    description: "Fresh pasta made every morning. Grandma-approved.",
+    categories: ["Most Ordered", "Pasta", "Antipasti"],
+    items: menu("tn", [
+      ["Bucatini Pomodoro", "Bucatini, slow-cooked tomato, basil, parmigiano", 19, 9, "Pasta", { badge: "#1 Most liked", likes: 97 }],
+      ["Nonna's Meatballs", "Ricotta meatballs, sugo, grilled bread", 14, 10, "Antipasti", { likes: 94 }],
+      ["Spicy Rigatoni", "Vodka sauce, Calabrian chili, burrata", 21, 16, "Pasta", { options: [opts("spice")] }],
+    ]),
+  },
+  {
+    id: "sweet-spot",
+    name: "Sweet Spot Bakery",
+    vertical: "restaurant",
+    cuisine: ["Bakery", "Dessert"],
+    priceLevel: "$",
+    rating: 4.9,
+    reviews: "2k+",
+    distance: 0.5,
+    eta: 18,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    hero: img(20),
+    logoText: "SS",
+    logoBg: "#f7c5d4",
+    logoFg: "#8a1c45",
+    description: "Donuts, layer cakes and pastries baked in Hayes Valley.",
+    categories: ["Most Ordered", "Donuts", "Cakes", "Cups"],
+    items: menu("ss", [
+      ["Donut Box (6)", "Glazed, sprinkle, chocolate, Boston cream & more", 16, 20, "Donuts", { badge: "#1 Most liked", likes: 99 }],
+      ["Strawberry Shortcake Slice", "Vanilla sponge, berries, whipped cream", 8.5, 7, "Cakes", { likes: 96 }],
+      ["Berry Parfait Cups (4)", "Panna cotta, berry compote", 12, 21, "Cups"],
+      ["Cookies & Cream Jar", "Chocolate cake, Oreo mousse", 7.5, 22, "Cups"],
+    ]),
+  },
+  {
+    id: "ember",
+    name: "Ember Skewer House",
+    vertical: "restaurant",
+    cuisine: ["BBQ", "Middle Eastern"],
+    priceLevel: "$$",
+    rating: 4.5,
+    reviews: "1k+",
+    distance: 1.8,
+    eta: 34,
+    fee: "$2.49 delivery fee",
+    dashpass: false,
+    hero: img(11),
+    logoText: "ES",
+    logoBg: "#e46a1f",
+    logoFg: "#fff",
+    description: "Charcoal-grilled skewers, mezze and fresh pita.",
+    categories: ["Most Ordered", "Skewers", "Mezze"],
+    items: menu("es", [
+      ["Mixed Skewer Platter", "Chicken, kofta and lamb skewers, rice, salad", 24, 11, "Skewers", { badge: "#1 Most liked", likes: 93 }],
+      ["Chicken Shawarma Plate", "Garlic toum, pickles, saffron rice", 17, 4, "Skewers", { options: [opts("spice")] }],
+    ]),
+  },
+  {
+    id: "sunny-side",
+    name: "Sunny Side Café",
+    vertical: "restaurant",
+    cuisine: ["Breakfast", "Coffee"],
+    priceLevel: "$",
+    rating: 4.6,
+    reviews: "5k+",
+    distance: 0.3,
+    eta: 15,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    promo: "Buy 1, get 1 free",
+    hero: img(8),
+    logoText: "☀",
+    logoBg: "#ffb400",
+    logoFg: "#fff",
+    description: "All-day breakfast, avocado toast and single-origin pour-overs.",
+    categories: ["Most Ordered", "Breakfast", "Coffee"],
+    items: menu("sc", [
+      ["Avocado Egg Toast", "Sourdough, smashed avocado, jammy eggs, chili flake", 13, 8, "Breakfast", { badge: "#1 Most liked", likes: 95, options: [opts("toppings")] }],
+      ["Breakfast Burger", "Fried egg, bacon, hash brown, cheddar", 14.5, 17, "Breakfast"],
+      ["Iced Orange Spritz", "Fresh OJ, tonic, rosemary", 6, 31, "Coffee"],
+    ]),
+  },
+  {
+    id: "freshcart",
+    name: "FreshCart Market",
+    vertical: "grocery",
+    cuisine: ["Grocery"],
+    priceLevel: "$",
+    rating: 4.9,
+    reviews: "1,200+",
+    distance: 1.5,
+    eta: 30,
+    fee: "$0 delivery fee over $25",
+    dashpass: true,
+    promo: "$15 off $50+",
+    hero: img(27),
+    logoText: "FC",
+    logoBg: "#00539f",
+    logoFg: "#fff",
+    description: "Farm-fresh produce, pantry staples and everyday essentials.",
+    categories: ["Produce", "Dairy & Eggs", "Snacks", "Beverages"],
+    items: goods("fc", [
+      ["Strawberries", "1 lb", 5.05, "🍓", "Produce"],
+      ["Fresh Organic Lemons Bag", "2 lb", 6.35, "🍋", "Produce"],
+      ["Cotton Candy Grapes", "1.5 lb", 5.95, "🍇", "Produce"],
+      ["Hass Avocados", "4 ct", 4.99, "🥑", "Produce"],
+      ["Bananas", "Bunch of 5", 1.89, "🍌", "Produce"],
+      ["Seedless Watermelon", "Each", 7.49, "🍉", "Produce"],
+      ["Large Brown Eggs", "Dozen", 4.29, "🥚", "Dairy & Eggs"],
+      ["Whole Milk", "1/2 gal", 3.79, "🥛", "Dairy & Eggs"],
+      ["Aged Cheddar Block", "8 oz", 4.49, "🧀", "Dairy & Eggs"],
+      ["Sourdough Loaf", "24 oz", 6.99, "🍞", "Snacks"],
+      ["Tortilla Chips", "13 oz", 3.99, "🌮", "Snacks"],
+      ["Orange Juice", "52 fl oz", 4.99, "🧃", "Beverages"],
+    ]),
+  },
+  {
+    id: "greenleaf",
+    name: "Greenleaf Grocery",
+    vertical: "grocery",
+    cuisine: ["Grocery", "Organic"],
+    priceLevel: "$$",
+    rating: 4.8,
+    reviews: "900+",
+    distance: 2.1,
+    eta: 35,
+    fee: "$0 delivery fee over $35",
+    dashpass: true,
+    hero: img(25),
+    logoText: "G",
+    logoBg: "#e21b2c",
+    logoFg: "#fff",
+    description: "Organic and local groceries, hand-picked by your Dasher.",
+    categories: ["Seasonal Candy", "Produce", "Bakery"],
+    items: goods("gl", [
+      ["Classic Candy Corn", "11 oz", 3.49, "🍬", "Seasonal Candy"],
+      ["Chocolate Pumpkins", "9 oz", 5.99, "🎃", "Seasonal Candy"],
+      ["Peanut Butter Cups", "8 pk", 3.99, "🍫", "Seasonal Candy"],
+      ["Honeycrisp Apples", "3 lb bag", 6.99, "🍎", "Produce"],
+      ["Baby Carrots", "1 lb", 1.99, "🥕", "Produce"],
+      ["Butter Croissants", "4 ct", 6.49, "🥐", "Bakery"],
+    ]),
+  },
+  {
+    id: "dashmart",
+    name: "DashMart",
+    vertical: "grocery",
+    cuisine: ["Convenience"],
+    priceLevel: "$",
+    rating: 4.7,
+    reviews: "15k+",
+    distance: 0.9,
+    eta: 20,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    hero: img(30),
+    logoText: "DM",
+    logoBg: "#eb1700",
+    logoFg: "#fff",
+    description: "Snacks, essentials and health products delivered fast.",
+    categories: ["Health & Flu Essentials", "Snacks", "Drinks"],
+    items: goods("dm", [
+      ["Honey Lemon Cough Drops", "30 ct", 3.49, "🍯", "Health & Flu Essentials"],
+      ["Vitamin C Fizzy Drink Mix", "10 ct", 6.99, "🍊", "Health & Flu Essentials"],
+      ["Sheer Bandages", "40 ct", 6.09, "🩹", "Health & Flu Essentials"],
+      ["Tissues", "3 boxes", 5.49, "🤧", "Health & Flu Essentials"],
+      ["Nacho Cheese Chips", "9.25 oz", 5.29, "🔺", "Snacks"],
+      ["Chocolate Bar Variety", "6 pk", 7.99, "🍫", "Snacks"],
+      ["Cold Brew Coffee", "11 fl oz", 4.29, "🥫", "Drinks"],
+      ["Sparkling Water 8pk", "12 fl oz cans", 6.49, "🫧", "Drinks"],
+    ]),
+  },
+  {
+    id: "bloom",
+    name: "Bloom & Stem Flowers",
+    vertical: "retail",
+    cuisine: ["Flowers", "Gifts"],
+    priceLevel: "$$",
+    rating: 4.9,
+    reviews: "800+",
+    distance: 1.2,
+    eta: 40,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    promo: "Free card",
+    hero: "/img/r1.jpg",
+    logoText: "B&S",
+    logoBg: "#5a3d8a",
+    logoFg: "#fff",
+    description: "Hand-tied bouquets and plants for every occasion.",
+    categories: ["Bouquets", "Plants", "Gifts"],
+    items: goods("bs", [
+      ["Sunflower Sunshine Bouquet", "12 stems", 39.99, "🌻", "Bouquets"],
+      ["Classic Red Roses", "1 dozen", 54.99, "🌹", "Bouquets"],
+      ["Tulip Garden Mix", "15 stems", 34.99, "🌷", "Bouquets"],
+      ["Potted Orchid", "5 in pot", 29.99, "🪴", "Plants"],
+      ["Balloon Add-on", "Happy Birthday", 8.99, "🎈", "Gifts"],
+    ]),
+  },
+  {
+    id: "peak",
+    name: "Peak Sports Outfitters",
+    vertical: "retail",
+    cuisine: ["Sporting Goods"],
+    priceLevel: "$$",
+    rating: 4.7,
+    reviews: "2k+",
+    distance: 2.4,
+    eta: 45,
+    fee: "$3.99 delivery fee",
+    dashpass: true,
+    hero: "/img/r3.jpg",
+    logoText: "PK",
+    logoBg: "#0c5e3b",
+    logoFg: "#fff",
+    description: "Gear, apparel and hydration for game day and beyond.",
+    categories: ["Hydration", "Bags", "Apparel"],
+    items: goods("pk", [
+      ["30 oz Quencher Tumbler", "Tigerlily", 35, "🥤", "Hydration"],
+      ["Heritage Drawstring Bag", "Black/White", 18, "🎒", "Bags"],
+      ["Tour Mesh Golf Hat", "Royal/White", 37, "🧢", "Apparel"],
+      ["Pickleball Paddle Set", "2 paddles, 4 balls", 49.99, "🏓", "Apparel"],
+      ["Electrolyte Drink Mix", "16 sticks", 24.99, "⚡", "Hydration"],
+    ]),
+  },
+  {
+    id: "pawpal",
+    name: "PawPal Pet Supply",
+    vertical: "retail",
+    cuisine: ["Pets"],
+    priceLevel: "$",
+    rating: 4.8,
+    reviews: "1k+",
+    distance: 1.6,
+    eta: 32,
+    fee: "$0 delivery fee",
+    dashpass: true,
+    promo: "$10 off $40+",
+    hero: "/img/r2.jpg",
+    logoText: "🐾",
+    logoBg: "#ff7a00",
+    logoFg: "#fff",
+    description: "Food, treats and toys for every pet.",
+    categories: ["Dog", "Cat"],
+    items: goods("pp", [
+      ["Squeaky Bone Chew Toy", "Medium", 9.99, "🦴", "Dog"],
+      ["Grain-Free Kibble", "12 lb", 42.99, "🐕", "Dog"],
+      ["Salmon Cat Treats", "3 oz", 4.49, "🐟", "Cat"],
+      ["Feather Wand Toy", "Each", 7.99, "🪶", "Cat"],
+    ]),
+  },
+];
+
+export const PAST_ORDERS: PastOrder[] = [
+  { id: "o1", storeId: "smash-bros", date: "Oct 12", items: 3, total: 34.2, status: "Completed", rated: 5 },
+  { id: "o2", storeId: "freshcart", date: "Oct 9", items: 14, total: 86.47, status: "Completed" },
+  { id: "o3", storeId: "koi-rice", date: "Oct 4", items: 2, total: 52.1, status: "Completed", rated: 4 },
+  { id: "o4", storeId: "sunny-side", date: "Sep 28", items: 2, total: 21.85, status: "Completed" },
+  { id: "o5", storeId: "golden-crust", date: "Sep 20", items: 1, total: 24.6, status: "Cancelled" },
+];
+
+export const BROWSE_TILES = [
+  { label: "Grocery", emoji: "🥦", bg: "#e7f4e4", tab: "grocery" as const },
+  { label: "Convenience", emoji: "🥤", bg: "#fff1d6", tab: "grocery" as const },
+  { label: "Alcohol", emoji: "🍷", bg: "#f6e3ea", tab: "grocery" as const },
+  { label: "Pets", emoji: "🐶", bg: "#fde9d9", tab: "retail" as const },
+  { label: "Flowers", emoji: "💐", bg: "#efe6fa", tab: "retail" as const },
+  { label: "Health", emoji: "💊", bg: "#e3f0fb", tab: "grocery" as const },
+  { label: "Beauty", emoji: "💄", bg: "#fbe4ef", tab: "retail" as const },
+  { label: "Retail", emoji: "🛍️", bg: "#eceff3", tab: "retail" as const },
+  { label: "Gifts", emoji: "🎁", bg: "#fdebe8", tab: "retail" as const },
+];
+
+export function storeById(id: string) {
+  return STORES.find((s) => s.id === id) ?? STORES[0];
+}
+
+export function itemById(storeId: string, itemId: string) {
+  const s = storeById(storeId);
+  return s.items.find((i) => i.id === itemId) ?? s.items[0];
+}
+
+export function money(n: number) {
+  return `$${n.toFixed(2)}`;
 }
